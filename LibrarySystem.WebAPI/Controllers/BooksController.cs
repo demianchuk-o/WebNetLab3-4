@@ -14,26 +14,26 @@ public class BooksController : ControllerBase
     }
     
     [HttpGet("{id}")]
-    public async Task<ActionResult<BookDto>> GetById(int id)
+    public async Task<ActionResult<BookDto>> GetById(Guid id)
     {
-        return Ok(new BookDto("title", "author", "subject", true));
+        return Ok(new BookDto(Guid.NewGuid(),"title", "author", "subject", true));
     }
     
     [HttpPost]
     public async Task<ActionResult> Create([FromBody] BookCreatedDto book)
     {
-        var bookEntity = new BookDto(book.Author, book.Title, book.Subject, true);
+        var bookEntity = new BookDto(Guid.NewGuid(),book.Author, book.Title, book.Subject, true);
         return CreatedAtAction(nameof(GetById), new { id = 1 }, bookEntity);
     }
     
     [HttpPut("{id}")]
-    public async Task<ActionResult> Update(int id, [FromBody] BookUpdatedDto book)
+    public async Task<ActionResult> Update(Guid id, [FromBody] BookUpdatedDto book)
     {
         return Ok(book);
     }
     
     [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<ActionResult> Delete(Guid id)
     {
         return NoContent();
     }
