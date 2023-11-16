@@ -23,7 +23,7 @@ public class BooksController : ControllerBase
     public async Task<ActionResult> Create([FromBody] BookCreatedDto book)
     {
         var bookEntity = new BookDto(Guid.NewGuid(),book.Author, book.Title, book.Subject, true);
-        return CreatedAtAction(nameof(GetById), new { id = 1 }, bookEntity);
+        return CreatedAtAction(nameof(GetById), new { id = bookEntity.Id }, bookEntity);
     }
     
     [HttpPut("{id}")]
