@@ -18,7 +18,7 @@ public class BooksController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<BookDto>> GetById(Guid id)
     {
-        return Ok(new BookDto(Guid.NewGuid(),"title", "author", "subject", true));
+        return Ok(new BookDto(id,"title", "author", "subject", true));
     }
     
     [HttpPost]
