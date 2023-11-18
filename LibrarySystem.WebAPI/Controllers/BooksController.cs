@@ -31,7 +31,8 @@ public class BooksController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> Update(Guid id, [FromBody] BookUpdatedDto book)
     {
-        return Ok(book);
+        var bookEntity = new BookDto(id,book.Author, book.Title, book.Subject, true);
+        return Ok(bookEntity);
     }
     
     [HttpDelete("{id}")]
