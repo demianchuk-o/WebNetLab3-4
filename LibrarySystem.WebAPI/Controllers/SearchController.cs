@@ -11,7 +11,7 @@ namespace LibrarySystem.WebAPI.Controllers;
 public class SearchController : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<BookDto>>> GetSearchResults([FromQuery] SearchQueryDto query, PaginationDto pagination)
+    public async Task<ActionResult<IEnumerable<BookDto>>> GetSearchResults([FromQuery] SearchQueryDto query, [FromQuery] PaginationDto pagination)
     {
         return Ok(new List<BookDto>());
     }
