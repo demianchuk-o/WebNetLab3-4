@@ -6,17 +6,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LibrarySystem.WebAPI.Controllers;
 
-[Authorize(Roles = "LoansManager")]
 [ApiController]
 [Route("api/[controller]")]
 public class LoansController : ControllerBase
 {
+    [Authorize(Roles = "LoansManager")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<LoanDto>>> GetAll()
     {
         return Ok(new List<LoanDto>());
     }
     
+    [Authorize(Roles = "LoansManager")]
     [HttpGet("{id}")]
     public async Task<ActionResult<LoanDto>> GetById(Guid id)
     {
@@ -28,6 +29,7 @@ public class LoansController : ControllerBase
             null));
     }
 
+    [Authorize(Roles = "Reader")]
     [HttpPost]
     public async Task<ActionResult> Create([FromBody] LoanCreatedDto loan)
     {
@@ -41,12 +43,14 @@ public class LoansController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = loanEntity.Id }, loanEntity);
     }
     
+    [Authorize(Roles = "LoansManager")]
     [HttpPut("{id}")]
     public async Task<ActionResult> Update(Guid id, [FromBody] LoanUpdatedDto loan)
     {
         return Ok(loan);
     }
     
+    [Authorize(Roles = "LoansManager")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
