@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibrarySystem.WebAPI", "Lib
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibrarySystem.Common", "LibrarySystem.Common\LibrarySystem.Common.csproj", "{299FC195-0384-4CCA-9B9C-805B2DFFF089}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibrarySystem.DAL", "LibrarySystem.DAL\LibrarySystem.DAL.csproj", "{CE05C925-DBC0-4CAE-A25B-69E6D311EF02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,6 +16,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{C827A481-E30A-4DFB-89C4-F7F3C5B481A5} = {52D4646D-C53F-4D89-B6E2-6232D882A2A3}
 		{299FC195-0384-4CCA-9B9C-805B2DFFF089} = {52D4646D-C53F-4D89-B6E2-6232D882A2A3}
+		{CE05C925-DBC0-4CAE-A25B-69E6D311EF02} = {52D4646D-C53F-4D89-B6E2-6232D882A2A3}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{C827A481-E30A-4DFB-89C4-F7F3C5B481A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -24,5 +27,9 @@ Global
 		{299FC195-0384-4CCA-9B9C-805B2DFFF089}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{299FC195-0384-4CCA-9B9C-805B2DFFF089}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{299FC195-0384-4CCA-9B9C-805B2DFFF089}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE05C925-DBC0-4CAE-A25B-69E6D311EF02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE05C925-DBC0-4CAE-A25B-69E6D311EF02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE05C925-DBC0-4CAE-A25B-69E6D311EF02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE05C925-DBC0-4CAE-A25B-69E6D311EF02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
