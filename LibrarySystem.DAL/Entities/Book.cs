@@ -11,4 +11,6 @@ public class Book : IIdentity
     public Guid SubjectId { get; set; }
     public Subject Subject { get; set; }
     public bool Availability { get; set; } = true;
+    
+    public ICollection<Loan> Loans { get; init; } = new List<Loan>();
 }
