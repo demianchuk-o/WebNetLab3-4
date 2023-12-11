@@ -1,4 +1,5 @@
-﻿using LibrarySystem.DAL.Entities.Abstract;
+﻿using LibrarySystem.DAL.Context;
+using LibrarySystem.DAL.Entities.Abstract;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibrarySystem.DAL.Repositories.Abstract;
@@ -6,45 +7,45 @@ namespace LibrarySystem.DAL.Repositories.Abstract;
 public abstract class Repository<TEntity> : IRepository<TEntity>
     where TEntity : class, IIdentity
 {
-    protected readonly DbSet<TEntity> DbSet;
+    protected readonly LibraryDbContext Context;
 
     protected Repository(DbContext context)
     {
-        DbSet = context.Set<TEntity>();
+        Context = (LibraryDbContext) context;
     }
 
     public async Task<TEntity?> GetByIdAsync(Guid id)
     {
-        return await DbSet.FindAsync(id);
+        return await Context.Set<TEntity>().FindAsync(id);
     }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync()
     {
-        return await DbSet.ToListAsync();
+        return await Context.Set<TEntity>().ToListAsync();
     }
 
     public async Task AddAsync(TEntity entity)
     {
-        await DbSet.AddAsync(entity);
+        await Context.Set<TEntity>().AddAsync(entity);
     }
 
     public void Update(TEntity entity)
     {
-        DbSet.Update(entity);
+        Context.Set<TEntity>().Update(entity);
     }
 
     public void Delete(TEntity entity)
     {
-        DbSet.Remove(entity);
+        Context.Set<TEntity>().Remove(entity);
     }
 
     public async Task DeleteByIdAsync(Guid id)
     {
-        var entity = await DbSet.FindAsync(id);
+        var entity = await Context.Set<TEntity>().FindAsync(id);
         
         if (entity is not null)
         {
-            DbSet.Remove(entity);
+            Context.Set<TEntity>().Remove(entity);
         }
     }
 }
