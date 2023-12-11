@@ -1,5 +1,7 @@
 ﻿using LibrarySystem.DAL.Context;
 using LibrarySystem.DAL.Entities.Abstract;
+using LibrarySystem.DAL.Specifications;
+using LibrarySystem.DAL.Specifications.Abstract;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibrarySystem.DAL.Repositories.Abstract;
@@ -47,5 +49,13 @@ public abstract class Repository<TEntity> : IRepository<TEntity>
         {
             Context.Set<TEntity>().Remove(entity);
         }
+    }
+    
+    protected IQueryable<TEntity> ApplySpecification(
+        Specification<TEntity> specification)
+    {
+        return SpecificationEvaluator.GetQuery(
+            Context.Set<TEntity>().AsQueryable(), 
+            specification);
     }
 }
