@@ -5,5 +5,5 @@ namespace LibrarySystem.Common.Loans;
 
 public record LoanCreatedDto(
     UserDto Borrower,
-    ICollection<BookDto> BooksIds
+    ICollection<BookDto> Books
     );
