@@ -20,6 +20,12 @@ public static class SpecificationEvaluator
                 (current, includeExpression) => 
                     current.Include(includeExpression));
 
+        if (specification is { Skip: > 0, Take: > 0 })
+        {
+            query = query.Skip(specification.Skip)
+                .Take(specification.Take);
+        }
+
         return query;
     }
 }
