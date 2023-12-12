@@ -24,8 +24,9 @@ public class BookRepository : Repository<Book>, IBookRepository
             .FirstOrDefaultAsync();
     }
 
-    public Task<IEnumerable<Book>> GetSearchResultsAsync(SearchQueryDto searchQuery, PaginationDto pagination)
+    public async Task<IEnumerable<Book>> GetSearchResultsAsync(SearchQueryDto searchQuery, PaginationDto pagination)
     {
-        throw new NotImplementedException();
+        return await ApplySpecification(new BooksSearchQuerySpecification(searchQuery, pagination))
+            .ToListAsync();
     }
 }
