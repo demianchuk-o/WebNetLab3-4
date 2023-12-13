@@ -8,7 +8,7 @@ using LibrarySystem.DAL.UnitOfWork.Abstract;
 
 namespace LibrarySystem.Bll.Services;
 
-public class BookService : BaseService<Book>, IBookService
+public class BookService : BaseService, IBookService
 {
     public BookService(IUnitOfWork unitOfWork, IMapper mapper) 
         : base(unitOfWork, mapper)
