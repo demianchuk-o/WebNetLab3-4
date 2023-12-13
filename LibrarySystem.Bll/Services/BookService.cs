@@ -59,7 +59,7 @@ public class BookService : BaseService<Book>, IBookService
 
     public async Task<IEnumerable<BookModel>> GetSearchResultsAsync(SearchQueryDto searchQuery, PaginationDto pagination)
     {
-        var results = await ((IBookRepository)UnitOfWork.Books).GetSearchResultsAsync(searchQuery, pagination);
+        var results = await UnitOfWork.Books.GetSearchResultsAsync(searchQuery, pagination);
         
         return Mapper.Map<IEnumerable<BookModel>>(results);
     }
