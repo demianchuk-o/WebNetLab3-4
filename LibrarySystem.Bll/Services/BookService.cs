@@ -36,9 +36,20 @@ public class BookService : BaseService<Book>, IBookService
     {
         var entity = Mapper.Map<Book>(model);
         entity.Id = Guid.NewGuid();
+
+        var author = await EnsureAuthorAsync(model);
+        var subject = await EnsureSubjectAsync(model);
         
+        entity.AuthorId = author.Id;
+        entity.SubjectId = subject.Id;
+        
+        await UnitOfWork.Books.AddAsync(Mapper.Map<Book>(model));
+        await UnitOfWork.SaveChangesAsync();
+    }
+
+    private async Task<Author> EnsureAuthorAsync(BookModel model)
+    {
         var author = await UnitOfWork.Authors.GetByFullnameAsync(model.Author);
-        var subject = await UnitOfWork.Subjects.GetByNameAsync(model.Subject);
         
         if (author is null)
         {
@@ -51,6 +62,13 @@ public class BookService : BaseService<Book>, IBookService
             await UnitOfWork.Authors.AddAsync(author);
         }
         
+        return author;
+    }
+    
+    private async Task<Subject> EnsureSubjectAsync(BookModel model)
+    {
+        var subject = await UnitOfWork.Subjects.GetByNameAsync(model.Subject);
+        
         if (subject is null)
         {
             subject = new Subject
@@ -62,13 +80,9 @@ public class BookService : BaseService<Book>, IBookService
             await UnitOfWork.Subjects.AddAsync(subject);
         }
         
-        entity.AuthorId = author.Id;
-        entity.SubjectId = subject.Id;
-        
-        await UnitOfWork.Books.AddAsync(Mapper.Map<Book>(model));
-        await UnitOfWork.SaveChangesAsync();
+        return subject;
     }
-
+    
     public async Task UpdateAsync(Guid id, BookModel model)
     {
         var entity = await UnitOfWork.Books.GetByIdAsync(id);
