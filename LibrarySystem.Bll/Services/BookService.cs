@@ -4,7 +4,6 @@ using LibrarySystem.Bll.Models;
 using LibrarySystem.Bll.Services.Abstract;
 using LibrarySystem.Common.Search;
 using LibrarySystem.DAL.Entities;
-using LibrarySystem.DAL.Repositories.Abstract;
 using LibrarySystem.DAL.UnitOfWork.Abstract;
 
 namespace LibrarySystem.Bll.Services;
@@ -35,7 +34,36 @@ public class BookService : BaseService<Book>, IBookService
 
     public async Task AddAsync(BookModel model)
     {
-        model.Id = Guid.NewGuid();
+        var entity = Mapper.Map<Book>(model);
+        entity.Id = Guid.NewGuid();
+        
+        var author = await UnitOfWork.Authors.GetByFullnameAsync(model.Author);
+        var subject = await UnitOfWork.Subjects.GetByNameAsync(model.Subject);
+        
+        if (author is null)
+        {
+            author = new Author
+            {
+                Id = Guid.NewGuid(),
+                Name = model.Author
+            };
+            
+            await UnitOfWork.Authors.AddAsync(author);
+        }
+        
+        if (subject is null)
+        {
+            subject = new Subject
+            {
+                Id = Guid.NewGuid(),
+                Name = model.Subject
+            };
+            
+            await UnitOfWork.Subjects.AddAsync(subject);
+        }
+        
+        entity.AuthorId = author.Id;
+        entity.SubjectId = subject.Id;
         
         await UnitOfWork.Books.AddAsync(Mapper.Map<Book>(model));
         await UnitOfWork.SaveChangesAsync();
