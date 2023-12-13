@@ -39,6 +39,14 @@ public class UserService : BaseService, IUserService
 
     public async Task AddAsync(UserModel model)
     {
+        var entity = Mapper.Map<User>(model);
+        entity.Id = Guid.NewGuid();
+        
+        await _userManager.CreateAsync(entity);
+    }
+
+    public async Task AddAsync(UserModel model, string hashPassword)
+    {
         var entity = await UnitOfWork.Users.GetByEmailAsync(model.Email);
         
         if(entity is not null)
@@ -90,5 +98,15 @@ public class UserService : BaseService, IUserService
         var factory = new JwtFactory(_configuration);
         
         return factory.GenerateJwt(user, roleName);
+    }
+
+    public async Task RegisterAsync(UserModel model, string password)
+    {
+        var userEntity = await UnitOfWork.Users.GetByEmailAsync(model.Email);
+        
+        if (userEntity is not null)
+            throw new UserAlreadyExistsException(model.Email);
+        
+        await _userManager.CreateAsync(Mapper.Map<User>(model), password);
     }
 }
