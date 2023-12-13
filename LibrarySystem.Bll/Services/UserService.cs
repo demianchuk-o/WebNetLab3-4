@@ -64,7 +64,8 @@ public class UserService : BaseService, IUserService
     public async Task<UserModel?> GetByEmailAsync(string email)
     {
         var userByEmail = await UnitOfWork.Users.GetByEmailAsync(email);
-        return userByEmail is null ? null : Mapper.Map<UserModel>(userByEmail);
+        return userByEmail is not null ? Mapper.Map<UserModel>(userByEmail)
+                : throw new UserWithEmailNotFoundException(email);
     }
 
     public async Task<string> AuthenticateAsync(string email, string password)
