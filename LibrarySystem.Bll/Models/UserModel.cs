@@ -4,7 +4,7 @@ namespace LibrarySystem.Bll.Models;
 
 public class UserModel : IModel
 {
-    public Guid Id { get; init; }
+    public Guid Id { get; set; }
     public string UserName { get; set; } = null!;
     public string Email { get; set; } = null!;
 }

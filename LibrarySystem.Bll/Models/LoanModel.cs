@@ -4,7 +4,7 @@ namespace LibrarySystem.Bll.Models;
 
 public class LoanModel : IModel
 {
-    public Guid Id { get; init; }
+    public Guid Id { get; set; }
     public UserModel Borrower { get; set; }
     public DateTime BorrowDate { get; set; }
     public DateTime DueDate { get; set; }
