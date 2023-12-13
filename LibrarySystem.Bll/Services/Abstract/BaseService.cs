@@ -5,17 +5,14 @@ using LibrarySystem.DAL.UnitOfWork.Abstract;
 
 namespace LibrarySystem.Bll.Services.Abstract;
 
-public abstract class BaseService<TEntity, TRepository>
+public abstract class BaseService<TEntity>
     where TEntity : class, IIdentity
-    where TRepository : IRepository<TEntity>
 {
-    protected readonly IRepository<TEntity> Repository;
     protected readonly IUnitOfWork UnitOfWork;
     protected readonly IMapper Mapper;
     
-    protected BaseService(TRepository repository, IUnitOfWork unitOfWork, IMapper mapper)
+    protected BaseService(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        Repository = repository;
         UnitOfWork = unitOfWork;
         Mapper = mapper;
     }
