@@ -9,16 +9,16 @@ using LibrarySystem.DAL.UnitOfWork.Abstract;
 
 namespace LibrarySystem.Bll.Services;
 
-public class BookService : BaseService<Book, IBookRepository>, IBookService
+public class BookService : BaseService<Book>, IBookService
 {
-    public BookService(IBookRepository repository, IUnitOfWork unitOfWork, IMapper mapper) 
-        : base(repository, unitOfWork, mapper)
+    public BookService(IUnitOfWork unitOfWork, IMapper mapper) 
+        : base(unitOfWork, mapper)
     {
     }
     
     public async Task<BookModel?> GetByIdAsync(Guid id)
     {
-        var entity = await Repository.GetByIdAsync(id);
+        var entity = await UnitOfWork.Books.GetByIdAsync(id);
         
         if(entity is null)
             throw new EntityNotFoundException<Book>(id);
@@ -28,7 +28,7 @@ public class BookService : BaseService<Book, IBookRepository>, IBookService
 
     public async Task<IEnumerable<BookModel>> GetAllAsync()
     {
-        var entities = await Repository.GetAllAsync();
+        var entities = await UnitOfWork.Books.GetAllAsync();
         
         return Mapper.Map<IEnumerable<BookModel>>(entities);
     }
@@ -37,29 +37,29 @@ public class BookService : BaseService<Book, IBookRepository>, IBookService
     {
         model.Id = Guid.NewGuid();
         
-        await Repository.AddAsync(Mapper.Map<Book>(model));
+        await UnitOfWork.Books.AddAsync(Mapper.Map<Book>(model));
         await UnitOfWork.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(Guid id, BookModel model)
     {
-        var entity = await Repository.GetByIdAsync(id);
+        var entity = await UnitOfWork.Books.GetByIdAsync(id);
         
         if(entity is null)
             throw new EntityNotFoundException<Book>(model.Id);
         
-        Repository.Update(Mapper.Map(model, entity));
+        UnitOfWork.Books.Update(Mapper.Map(model, entity));
         await UnitOfWork.SaveChangesAsync();
     }
 
     public async Task DeleteByIdAsync(Guid id)
     {
-        await Repository.DeleteByIdAsync(id);
+        await UnitOfWork.Books.DeleteByIdAsync(id);
     }
 
     public async Task<IEnumerable<BookModel>> GetSearchResultsAsync(SearchQueryDto searchQuery, PaginationDto pagination)
     {
-        var results = await ((IBookRepository)Repository).GetSearchResultsAsync(searchQuery, pagination);
+        var results = await ((IBookRepository)UnitOfWork.Books).GetSearchResultsAsync(searchQuery, pagination);
         
         return Mapper.Map<IEnumerable<BookModel>>(results);
     }
