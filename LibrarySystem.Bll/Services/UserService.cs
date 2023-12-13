@@ -45,20 +45,6 @@ public class UserService : BaseService, IUserService
         await _userManager.CreateAsync(entity);
     }
 
-    public async Task AddAsync(UserModel model, string hashPassword)
-    {
-        var entity = await UnitOfWork.Users.GetByEmailAsync(model.Email);
-        
-        if(entity is not null)
-            throw new UserAlreadyExistsException(model.Email);
-        
-        entity = Mapper.Map<User>(model);
-        entity.Id = Guid.NewGuid();
-        
-        await UnitOfWork.Users.AddAsync(entity);
-        await UnitOfWork.SaveChangesAsync();
-    }
-
     public async Task UpdateAsync(Guid id, UserModel model)
     {
         var entity = await UnitOfWork.Users.GetByIdAsync(id);
@@ -102,11 +88,16 @@ public class UserService : BaseService, IUserService
 
     public async Task RegisterAsync(UserModel model, string password)
     {
+        await ThrowIfUserAlreadyExists(model);
+        
+        await _userManager.CreateAsync(Mapper.Map<User>(model), password);
+    }
+    
+    private async Task ThrowIfUserAlreadyExists(UserModel model)
+    {
         var userEntity = await UnitOfWork.Users.GetByEmailAsync(model.Email);
         
         if (userEntity is not null)
             throw new UserAlreadyExistsException(model.Email);
-        
-        await _userManager.CreateAsync(Mapper.Map<User>(model), password);
     }
 }
