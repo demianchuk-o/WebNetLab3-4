@@ -40,6 +40,7 @@ public class UserService : BaseService, IUserService
         entity.Id = Guid.NewGuid();
         
         await _userManager.CreateAsync(entity);
+        await _userManager.AddToRoleAsync(entity, "Reader");
     }
 
     public async Task UpdateAsync(Guid id, UserModel model)
@@ -84,6 +85,7 @@ public class UserService : BaseService, IUserService
         user.Id = Guid.NewGuid();
         
         await _userManager.CreateAsync(user, password);
+        await _userManager.AddToRoleAsync(user, "Reader");
     }
     
     private async Task<User> GetUserByIdOrThrowAsync(Guid id)
