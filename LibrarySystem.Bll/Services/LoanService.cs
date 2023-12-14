@@ -30,7 +30,7 @@ public class LoanService : BaseService, ILoanService
         return Mapper.Map<IEnumerable<LoanModel>>(entities);
     }
 
-    public async Task AddAsync(LoanModel model)
+    public async Task<Guid> AddAsync(LoanModel model)
     {
         var entity = Mapper.Map<Loan>(model);
         entity.Id = Guid.NewGuid();
@@ -48,6 +48,8 @@ public class LoanService : BaseService, ILoanService
         
         await UnitOfWork.Loans.AddAsync(entity);
         await UnitOfWork.SaveChangesAsync();
+        
+        return entity.Id;
     }
 
     public async Task UpdateAsync(Guid id, LoanModel model)
