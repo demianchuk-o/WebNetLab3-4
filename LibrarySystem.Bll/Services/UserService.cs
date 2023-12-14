@@ -3,6 +3,7 @@ using LibrarySystem.Bll.Exceptions;
 using LibrarySystem.Bll.Models;
 using LibrarySystem.Bll.Security;
 using LibrarySystem.Bll.Services.Abstract;
+using LibrarySystem.Common.Users;
 using LibrarySystem.DAL.Entities;
 using LibrarySystem.DAL.UnitOfWork.Abstract;
 using Microsoft.AspNetCore.Identity;
@@ -40,7 +41,7 @@ public class UserService : BaseService, IUserService
         entity.Id = Guid.NewGuid();
         
         await _userManager.CreateAsync(entity);
-        await _userManager.AddToRoleAsync(entity, "Reader");
+        await _userManager.AddToRoleAsync(entity, Roles.Reader);
     }
 
     public async Task UpdateAsync(Guid id, UserModel model)
@@ -85,7 +86,7 @@ public class UserService : BaseService, IUserService
         user.Id = Guid.NewGuid();
         
         await _userManager.CreateAsync(user, password);
-        await _userManager.AddToRoleAsync(user, "Reader");
+        await _userManager.AddToRoleAsync(user, Roles.Reader);
     }
     
     private async Task<User> GetUserByIdOrThrowAsync(Guid id)
