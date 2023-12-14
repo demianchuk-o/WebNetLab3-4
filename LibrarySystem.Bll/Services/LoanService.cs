@@ -57,6 +57,13 @@ public class LoanService : BaseService, ILoanService
 
     public async Task MakeLoanAsync(LoanModel model)
     {
+        await ValidateLoanAsync(model);
+
+        await AddAsync(model);
+    }
+    
+    private async Task ValidateLoanAsync(LoanModel model)
+    {
         var borrower = await UnitOfWork.Users.GetByIdAsync(model.Borrower.Id);
 
         if (borrower is null)
@@ -68,18 +75,20 @@ public class LoanService : BaseService, ILoanService
         
         foreach (var bookDto in model.Books)
         {
-            var bookEntity = await UnitOfWork.Books.GetByIdAsync(bookDto.Id);
-
-            if (bookEntity is null)
-                throw new EntityNotFoundException<Book>(bookDto.Id);
-
-            var book = Mapper.Map<BookModel>(bookEntity);
-            if (!book.IsAvailable())
-                throw new BookNotAvailableException(book.Id);
-            
+            await ValidateBookAvailabilityAsync(bookDto);
         }
+    }
 
-        await AddAsync(model);
+    private async Task ValidateBookAvailabilityAsync(BookModel bookDto)
+    {
+        var bookEntity = await UnitOfWork.Books.GetByIdAsync(bookDto.Id);
+
+        if (bookEntity is null)
+            throw new EntityNotFoundException<Book>(bookDto.Id);
+
+        var book = Mapper.Map<BookModel>(bookEntity);
+        if (!book.IsAvailable())
+            throw new BookNotAvailableException(book.Id);
     }
 
     public async Task ReturnLoanAsync(Guid id)
