@@ -22,10 +22,7 @@ public class UserService : BaseService, IUserService
 
     public async Task<UserModel?> GetByIdAsync(Guid id)
     {
-        var entity = await UnitOfWork.Users.GetByIdAsync(id);
-        
-        if(entity is null)
-            throw new EntityNotFoundException<User>(id);
+        var entity = await GetUserByIdOrThrowAsync(id);
         
         return Mapper.Map<UserModel>(entity);
     }
@@ -47,10 +44,7 @@ public class UserService : BaseService, IUserService
 
     public async Task UpdateAsync(Guid id, UserModel model)
     {
-        var entity = await UnitOfWork.Users.GetByIdAsync(id);
-        
-        if(entity is null)
-            throw new EntityNotFoundException<User>(id);
+        var entity = await GetUserByIdOrThrowAsync(id);
         
         UnitOfWork.Users.Update(Mapper.Map(model, entity));
         await UnitOfWork.SaveChangesAsync();
@@ -91,6 +85,17 @@ public class UserService : BaseService, IUserService
         
         await _userManager.CreateAsync(user, password);
     }
+    
+    private async Task<User> GetUserByIdOrThrowAsync(Guid id)
+    {
+        var userById = await UnitOfWork.Users.GetByIdAsync(id);
+        
+        if (userById is null)
+            throw new EntityNotFoundException<User>(id);
+        
+        return userById;
+    }
+    
     private async Task<User?> GetUserByEmailOrThrowAsync(string email)
     {
         var userByEmail = await UnitOfWork.Users.GetByEmailAsync(email);
