@@ -13,11 +13,11 @@ namespace LibrarySystem.Bll.Services;
 public class UserService : BaseService, IUserService
 {
     private readonly UserManager<User> _userManager;
-    private readonly IConfiguration _configuration;
-    public UserService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<User> userManager, IConfiguration configuration) : base(unitOfWork, mapper)
+    private readonly JwtFactory _jwtFactory;
+    public UserService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<User> userManager, JwtFactory jwtFactory) : base(unitOfWork, mapper)
     {
         _userManager = userManager;
-        _configuration = configuration;
+        _jwtFactory = jwtFactory;
     }
 
     public async Task<UserModel?> GetByIdAsync(Guid id)
@@ -81,10 +81,8 @@ public class UserService : BaseService, IUserService
             return null;
 
         var roleName = await UnitOfWork.Users.GetRoleNameAsync(user);
-
-        var factory = new JwtFactory(_configuration);
         
-        return factory.GenerateJwt(user, roleName);
+        return _jwtFactory.GenerateJwt(user, roleName);
     }
 
     public async Task RegisterAsync(UserModel model, string password)
