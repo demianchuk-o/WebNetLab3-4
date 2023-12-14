@@ -86,8 +86,10 @@ public class UserService : BaseService, IUserService
     public async Task RegisterAsync(UserModel model, string password)
     {
         await ThrowIfUserAlreadyExists(model);
+        var user = Mapper.Map<User>(model);
+        user.Id = Guid.NewGuid();
         
-        await _userManager.CreateAsync(Mapper.Map<User>(model), password);
+        await _userManager.CreateAsync(user, password);
     }
     private async Task<User?> GetUserByEmailOrThrowAsync(string email)
     {
