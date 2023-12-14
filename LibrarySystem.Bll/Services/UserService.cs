@@ -63,17 +63,14 @@ public class UserService : BaseService, IUserService
 
     public async Task<UserModel?> GetByEmailAsync(string email)
     {
-        var userByEmail = await UnitOfWork.Users.GetByEmailAsync(email);
-        return userByEmail is not null ? Mapper.Map<UserModel>(userByEmail)
-                : throw new UserWithEmailNotFoundException(email);
+        var userByEmail = await GetUserByEmailOrThrowAsync(email);
+        
+        return Mapper.Map<UserModel>(userByEmail);
     }
 
     public async Task<string> AuthenticateAsync(string email, string password)
     {
-        var user = await UnitOfWork.Users.GetByEmailAsync(email);
-        
-        if (user is null)
-            return null;
+        var user = await GetUserByEmailOrThrowAsync(email);
 
         var result = await _userManager.CheckPasswordAsync(user, password);
         
@@ -83,6 +80,16 @@ public class UserService : BaseService, IUserService
         var roleName = await UnitOfWork.Users.GetRoleNameAsync(user);
         
         return _jwtFactory.GenerateJwt(user, roleName);
+    }
+    
+    private async Task<User?> GetUserByEmailOrThrowAsync(string email)
+    {
+        var userByEmail = await UnitOfWork.Users.GetByEmailAsync(email);
+        
+        if (userByEmail is null)
+            throw new UserWithEmailNotFoundException(email);
+        
+        return userByEmail;
     }
 
     public async Task RegisterAsync(UserModel model, string password)
