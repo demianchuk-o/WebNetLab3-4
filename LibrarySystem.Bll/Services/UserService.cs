@@ -82,6 +82,13 @@ public class UserService : BaseService, IUserService
         return _jwtFactory.GenerateJwt(user, roleName);
     }
     
+
+    public async Task RegisterAsync(UserModel model, string password)
+    {
+        await ThrowIfUserAlreadyExists(model);
+        
+        await _userManager.CreateAsync(Mapper.Map<User>(model), password);
+    }
     private async Task<User?> GetUserByEmailOrThrowAsync(string email)
     {
         var userByEmail = await UnitOfWork.Users.GetByEmailAsync(email);
@@ -90,13 +97,6 @@ public class UserService : BaseService, IUserService
             throw new UserWithEmailNotFoundException(email);
         
         return userByEmail;
-    }
-
-    public async Task RegisterAsync(UserModel model, string password)
-    {
-        await ThrowIfUserAlreadyExists(model);
-        
-        await _userManager.CreateAsync(Mapper.Map<User>(model), password);
     }
     
     private async Task ThrowIfUserAlreadyExists(UserModel model)
