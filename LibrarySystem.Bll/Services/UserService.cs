@@ -96,7 +96,7 @@ public class UserService : BaseService, IUserService
         return userById;
     }
     
-    private async Task<User?> GetUserByEmailOrThrowAsync(string email)
+    private async Task<User> GetUserByEmailOrThrowAsync(string email)
     {
         var userByEmail = await UnitOfWork.Users.GetByEmailAsync(email);
         
