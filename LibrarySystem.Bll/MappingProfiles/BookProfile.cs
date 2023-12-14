@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LibrarySystem.Bll.Models;
+using LibrarySystem.Common.Books;
 using LibrarySystem.DAL.Entities;
 
 namespace LibrarySystem.Bll.MappingProfiles;
@@ -16,5 +17,9 @@ public class BookProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Author, opt => opt.Ignore())
             .ForMember(dest => dest.Subject, opt => opt.Ignore());
+
+        CreateMap<Book, BookDto>();
+
+        CreateMap<BookCreatedDto, BookModel>();
     }
 }
