@@ -35,13 +35,15 @@ public class UserService : BaseService, IUserService
         return Mapper.Map<IEnumerable<UserModel>>(entities);
     }
 
-    public async Task AddAsync(UserModel model)
+    public async Task<Guid> AddAsync(UserModel model)
     {
         var entity = Mapper.Map<User>(model);
         entity.Id = Guid.NewGuid();
         
         await _userManager.CreateAsync(entity);
         await _userManager.AddToRoleAsync(entity, Roles.Reader);
+        
+        return entity.Id;
     }
 
     public async Task UpdateAsync(Guid id, UserModel model)
