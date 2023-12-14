@@ -69,7 +69,7 @@ public class UserService : BaseService, IUserService
         var result = await _userManager.CheckPasswordAsync(user, password);
         
         if (!result)
-            return null;
+            throw new InvalidCredentialsException(email); 
 
         var roleName = await UnitOfWork.Users.GetRoleNameAsync(user);
         
