@@ -34,6 +34,17 @@ public class LoanService : BaseService, ILoanService
     {
         var entity = Mapper.Map<Loan>(model);
         entity.Id = Guid.NewGuid();
+
+        await ValidateLoanAsync(model);
+        
+        foreach (var bookModel in model.Books)
+        {
+            var book = await ValidateAndReturnBookAsync(bookModel);
+            book.Availability = false;
+            entity.Books.Add(book);
+            UnitOfWork.Books.Update(book);
+        }
+        
         
         await UnitOfWork.Loans.AddAsync(entity);
         await UnitOfWork.SaveChangesAsync();
@@ -54,41 +65,35 @@ public class LoanService : BaseService, ILoanService
     {
         await UnitOfWork.Loans.DeleteByIdAsync(id);
     }
-
-    public async Task MakeLoanAsync(LoanModel model)
-    {
-        await ValidateLoanAsync(model);
-
-        await AddAsync(model);
-    }
     
     private async Task ValidateLoanAsync(LoanModel model)
     {
-        var borrower = await UnitOfWork.Users.GetByIdAsync(model.Borrower.Id);
-
-        if (borrower is null)
-            throw new EntityNotFoundException<User>(model.Borrower.Id);
+        await ValidateBorrowerAsync(model.Borrower);
 
         const int maxBooks = 10;
         if (model.Books.Count > maxBooks)
             throw new MaxBooksException(maxBooks);
-        
-        foreach (var bookDto in model.Books)
-        {
-            await ValidateBookAvailabilityAsync(bookDto);
-        }
     }
 
-    private async Task ValidateBookAvailabilityAsync(BookModel bookDto)
+    private async Task ValidateBorrowerAsync(UserModel borrower)
+    {
+        var user = await UnitOfWork.Users.GetByIdAsync(borrower.Id);
+
+        if (user is null)
+            throw new EntityNotFoundException<User>(borrower.Id);
+    }
+
+    private async Task<Book> ValidateAndReturnBookAsync(BookModel bookDto)
     {
         var bookEntity = await UnitOfWork.Books.GetByIdAsync(bookDto.Id);
 
         if (bookEntity is null)
             throw new EntityNotFoundException<Book>(bookDto.Id);
 
-        var book = Mapper.Map<BookModel>(bookEntity);
-        if (!book.IsAvailable())
-            throw new BookNotAvailableException(book.Id);
+        if (!bookEntity.Availability)
+            throw new BookNotAvailableException(bookEntity.Id);
+        
+        return bookEntity;
     }
 
     public async Task ReturnLoanAsync(Guid id)
