@@ -98,15 +98,25 @@ public class LoanService : BaseService, ILoanService
         if(entity is null)
             throw new EntityNotFoundException<Loan>(id);
         
-        entity.ReturnDate = DateTime.Now;
-        UnitOfWork.Loans.Update(entity);
+        MarkLoanAsReturned(entity);
         
-        foreach (var book in entity.Books)
+        UpdateBooksAvailability(entity.Books);
+
+        await UnitOfWork.SaveChangesAsync();
+    }
+    
+    private void MarkLoanAsReturned(Loan loanEntity)
+    {
+        loanEntity.ReturnDate = DateTime.Now;
+        UnitOfWork.Loans.Update(loanEntity);
+    }
+
+    private void UpdateBooksAvailability(IEnumerable<Book> books)
+    {
+        foreach (var book in books)
         {
             book.Availability = true;
             UnitOfWork.Books.Update(book);
         }
-
-        await UnitOfWork.SaveChangesAsync();
     }
 }
