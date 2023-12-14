@@ -43,7 +43,7 @@ public class BookService : BaseService, IBookService
         entity.AuthorId = author.Id;
         entity.SubjectId = subject.Id;
         
-        await UnitOfWork.Books.AddAsync(Mapper.Map<Book>(model));
+        await UnitOfWork.Books.AddAsync(entity);
         await UnitOfWork.SaveChangesAsync();
     }
 
