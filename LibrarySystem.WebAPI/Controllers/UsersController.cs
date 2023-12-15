@@ -31,7 +31,7 @@ public class UsersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<UserDto>> GetById(Guid id)
     {
-        var user = _userService.GetByIdAsync(id);
+        var user = await _userService.GetByIdAsync(id);
         return _mapper.Map<UserDto>(user);
     }
     
