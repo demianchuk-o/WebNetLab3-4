@@ -25,11 +25,7 @@ public class JwtFactory
             new Claim(ClaimTypes.Role, role)
         };
 
-        var key = new byte[64];
-        using (var rng = RandomNumberGenerator.Create())
-        {
-            rng.GetBytes(key);
-        }
+        var key = Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value);
         
         var symmetricKey = new SymmetricSecurityKey(key);
         var creds = new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha512Signature);
