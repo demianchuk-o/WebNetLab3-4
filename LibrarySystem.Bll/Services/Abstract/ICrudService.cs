@@ -8,7 +8,7 @@ public interface ICrudService<TModel>
 {
     Task<TModel?> GetByIdAsync(Guid id);
     Task<IEnumerable<TModel>> GetAllAsync();
-    Task AddAsync(TModel model);
+    Task<Guid> AddAsync(TModel model);
     Task UpdateAsync(Guid id, TModel model);
     Task DeleteByIdAsync(Guid id);
 }

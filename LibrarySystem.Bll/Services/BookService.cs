@@ -32,7 +32,7 @@ public class BookService : BaseService, IBookService
         return Mapper.Map<IEnumerable<BookModel>>(entities);
     }
 
-    public async Task AddAsync(BookModel model)
+    public async Task<Guid> AddAsync(BookModel model)
     {
         var entity = Mapper.Map<Book>(model);
         entity.Id = Guid.NewGuid();
@@ -45,6 +45,8 @@ public class BookService : BaseService, IBookService
         
         await UnitOfWork.Books.AddAsync(entity);
         await UnitOfWork.SaveChangesAsync();
+        
+        return entity.Id;
     }
 
     private async Task<Author> EnsureAuthorAsync(BookModel model)

@@ -1,4 +1,5 @@
-﻿using LibrarySystem.DAL.Entities;
+﻿using LibrarySystem.DAL.Context;
+using LibrarySystem.DAL.Entities;
 using LibrarySystem.DAL.Repositories.Abstract;
 using LibrarySystem.DAL.Specifications.Loans;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +8,7 @@ namespace LibrarySystem.DAL.Repositories;
 
 public class LoansRepository : Repository<Loan>, ILoanRepository
 {
-    public LoansRepository(DbContext context) : base(context)
+    public LoansRepository(LibraryDbContext context) : base(context)
     {
     }
 
