@@ -1,4 +1,5 @@
 ﻿using LibrarySystem.Common.Search;
+using LibrarySystem.DAL.Context;
 using LibrarySystem.DAL.Entities;
 using LibrarySystem.DAL.Repositories.Abstract;
 using LibrarySystem.DAL.Specifications.Books;
@@ -8,7 +9,7 @@ namespace LibrarySystem.DAL.Repositories;
 
 public class BookRepository : Repository<Book>, IBookRepository
 {
-    public BookRepository(DbContext context) : base(context)
+    public BookRepository(LibraryDbContext context) : base(context)
     {
     }
 

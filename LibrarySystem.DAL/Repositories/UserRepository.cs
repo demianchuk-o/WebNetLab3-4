@@ -1,4 +1,5 @@
-﻿using LibrarySystem.DAL.Entities;
+﻿using LibrarySystem.DAL.Context;
+using LibrarySystem.DAL.Entities;
 using LibrarySystem.DAL.Repositories.Abstract;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +8,7 @@ namespace LibrarySystem.DAL.Repositories;
 
 public class UserRepository : Repository<User>, IUserRepository
 {
-    public UserRepository(DbContext context) : base(context)
+    public UserRepository(LibraryDbContext context) : base(context)
     {
     }
 
