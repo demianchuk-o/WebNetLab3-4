@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using LibrarySystem.DAL.Entities;
 using Microsoft.Extensions.Configuration;
@@ -24,8 +25,14 @@ public class JwtFactory
             new Claim(ClaimTypes.Role, role)
         };
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+        var key = new byte[64];
+        using (var rng = RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(key);
+        }
+        
+        var symmetricKey = new SymmetricSecurityKey(key);
+        var creds = new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha512Signature);
 
         var token = new JwtSecurityToken(
             claims: claims,
