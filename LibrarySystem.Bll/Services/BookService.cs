@@ -17,7 +17,7 @@ public class BookService : BaseService, IBookService
     
     public async Task<BookModel?> GetByIdAsync(Guid id)
     {
-        var entity = await UnitOfWork.Books.GetByIdAsync(id);
+        var entity = await UnitOfWork.Books.GetByIdWithAuthorAndSubjectAsync(id);
         
         if(entity is null)
             throw new EntityNotFoundException<Book>(id);
@@ -27,7 +27,7 @@ public class BookService : BaseService, IBookService
 
     public async Task<IEnumerable<BookModel>> GetAllAsync()
     {
-        var entities = await UnitOfWork.Books.GetAllAsync();
+        var entities = await UnitOfWork.Books.GetAllWithAuthorAndSubjectAsync();
         
         return Mapper.Map<IEnumerable<BookModel>>(entities);
     }
