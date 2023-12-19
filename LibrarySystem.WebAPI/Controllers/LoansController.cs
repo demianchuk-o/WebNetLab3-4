@@ -20,7 +20,7 @@ public class LoansController : ControllerBase
         _loanService = loanService;
         _mapper = mapper;
     }
-    [Authorize(Roles = "LoansManager")]
+    //[Authorize(Roles = "LoansManager")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<LoanDto>>> GetAll()
     {
@@ -28,7 +28,7 @@ public class LoansController : ControllerBase
         return _mapper.Map<IEnumerable<LoanDto>>(loans).ToList();
     }
     
-    [Authorize(Roles = "LoansManager")]
+    //[Authorize(Roles = "LoansManager")]
     [HttpGet("{id}")]
     public async Task<ActionResult<LoanDto>> GetById(Guid id)
     {
@@ -36,7 +36,7 @@ public class LoansController : ControllerBase
         return _mapper.Map<LoanDto>(loan);
     }
 
-    [Authorize(Roles = "Reader")]
+    //[Authorize(Roles = "Reader")]
     [HttpPost]
     public async Task<ActionResult> Create([FromBody] LoanCreatedDto loan)
     {
@@ -47,7 +47,7 @@ public class LoansController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = loanDto.Id }, loanDto);
     }
     
-    [Authorize(Roles = "LoansManager")]
+    //[Authorize(Roles = "LoansManager")]
     [HttpPut("{id}")]
     public async Task<ActionResult> Update(Guid id, [FromBody] LoanUpdatedDto loan)
     {
@@ -56,7 +56,7 @@ public class LoansController : ControllerBase
         return Ok(loanDto);
     }
     
-    [Authorize(Roles = "LoansManager")]
+    //[Authorize(Roles = "LoansManager")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {

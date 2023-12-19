@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LibrarySystem.WebAPI.Controllers;
 
-[Authorize(Roles = "CatalogManager")]
+//[Authorize(Roles = "CatalogManager")]
 [ApiController]
 [Route("api/[controller]")]
 public class BooksController : ControllerBase
