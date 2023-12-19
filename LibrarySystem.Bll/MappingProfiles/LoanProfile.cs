@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using LibrarySystem.Bll.Models;
+using LibrarySystem.Common.Books;
 using LibrarySystem.Common.Loans;
+using LibrarySystem.Common.Users;
 using LibrarySystem.DAL.Entities;
 
 namespace LibrarySystem.Bll.MappingProfiles;
@@ -68,5 +70,22 @@ public class LoanProfile : Profile
                     Subject = b.Subject,
                     Availability = b.Availability
                 })));
+
+        CreateMap<LoanModel, LoanDto>()
+            .ForMember(dest => dest.Borrower, opt => opt.MapFrom(src =>
+                new UserDto(
+                    src.Borrower.Id,
+                    src.Borrower.Email,
+                    src.Borrower.UserName)
+                ))
+            .ForMember(dest => dest.Books, opt => opt.MapFrom(src => src.Books
+                .Select(b => new BookDto
+                (
+                    b.Id,
+                    b.Title,
+                    b.Author,
+                    b.Subject,
+                    b.Availability
+                ))));
     }
 }
