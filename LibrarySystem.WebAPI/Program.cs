@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text;
 using LibrarySystem.Bll.MappingProfiles;
 using LibrarySystem.Bll.Security;
 using LibrarySystem.Bll.Services;
@@ -10,8 +11,11 @@ using LibrarySystem.DAL.Repositories;
 using LibrarySystem.DAL.Repositories.Abstract;
 using LibrarySystem.DAL.UnitOfWork;
 using LibrarySystem.DAL.UnitOfWork.Abstract;
+using LibrarySystem.WebAPI.Middlewares;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +38,28 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
+
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey =
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:Token"])),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+
+builder.Services.AddAuthorization();
+
 builder.Services.AddScoped<JwtFactory>(provider => new JwtFactory(builder.Configuration));
 
 builder.Services.AddScoped<IBookService, BookService>();
@@ -41,7 +67,8 @@ builder.Services.AddScoped<ILoanService, LoanService>();
 
 builder.Services.AddIdentity<User, LibraryRole>()
     .AddEntityFrameworkStores<LibraryDbContext>()
-    .AddDefaultTokenProviders();
+    .AddDefaultTokenProviders()
+    .AddRoles<LibraryRole>();
 
 builder.Services.AddScoped<UserManager<User>>();
 
@@ -64,9 +91,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
+
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+
 app.UseAuthorization();
+
 
 app.MapControllers();
 
