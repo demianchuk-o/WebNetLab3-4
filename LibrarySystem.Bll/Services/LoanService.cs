@@ -15,7 +15,7 @@ public class LoanService : BaseService, ILoanService
 
     public async Task<LoanModel?> GetByIdAsync(Guid id)
     {
-        var entity = await UnitOfWork.Loans.GetByIdAsync(id);
+        var entity = await UnitOfWork.Loans.GetByIdWithUserAndBooksAsync(id);
         
         if(entity is null)
             throw new EntityNotFoundException<Loan>(id);
@@ -25,7 +25,7 @@ public class LoanService : BaseService, ILoanService
 
     public async Task<IEnumerable<LoanModel>> GetAllAsync()
     {
-        var entities = await UnitOfWork.Loans.GetAllAsync();
+        var entities = await UnitOfWork.Loans.GetAllWithUserAndBooksAsync();
         
         return Mapper.Map<IEnumerable<LoanModel>>(entities);
     }
