@@ -1,7 +1,7 @@
 ﻿namespace LibrarySystem.Common.Search;
 
 public record SearchQueryDto(
-    string? NameKeyword,
-    string? AuthorKeyword,
-    string? SubjectKeyword
+    string? TitleKeyword = null,
+    string? AuthorKeyword = null,
+    string? SubjectKeyword = null
     );
