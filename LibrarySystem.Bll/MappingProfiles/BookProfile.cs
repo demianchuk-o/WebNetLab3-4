@@ -23,5 +23,7 @@ public class BookProfile : Profile
         CreateMap<BookCreatedDto, BookModel>();
         
         CreateMap<BookUpdatedDto, BookModel>();
+        
+        CreateMap<BookModel, BookDto>();
     }
 }
